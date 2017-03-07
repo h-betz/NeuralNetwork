@@ -14,11 +14,9 @@ def test(file_name):
 
 if __name__ == "__main__":
     val = test("shh.wav")
-    print(val[0,:])
     row = val[0, :]
     plt.plot(row, 'r')
     val = test("kss.wav")
-    print(val[0,:])
     row = val[0,:]
     plt.plot(row, 'b')
     plt.show()
