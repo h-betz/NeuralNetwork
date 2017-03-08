@@ -12,17 +12,18 @@ if __name__ == "__main__":
     d = 8.
     time_ita = 5000
     tau = 20
-    mfcc = mel.test("shh.wav")
-    # current = np.ones(time_ita) * mfcc[0,10]
-    # time4, v_plt4, spike4 = izh_simulation(a, b, c, d, time_ita, current, c)
-    # syn_output = synapse(tau, time4, spike4)
-    # w = 10.
-    # syn_current = w * syn_output
-    # time5, v_plt5, spike5 = izh_simulation(a, b, c, d, time_ita, syn_current, c)
-    #
-    # plt.plot(time4, v_plt4, 'b-')
-    # plt.plot(time5, v_plt5, 'g-')
-    # plt.plot(time4, syn_current, 'r-')
+    mfcc = mel.test("kss.wav")
+    # current = np.ones(time_ita) * mfcc[0,6]
+    # print(mfcc[0,10])
+    # time4, v_plt4, spike4 = neuron().izh_simulation(a, b, c, d, time_ita, current, c)
+    #syn_output = synapse(tau, time4, spike4)
+    #w = 10.
+    #syn_current = w * syn_output
+    #time5, v_plt5, spike5 = neuron.izh_simulation(a, b, c, d, time_ita, syn_current, c)
+
+    #plt.plot(time4, v_plt4, 'b-')
+    #plt.plot(time5, v_plt5, 'g-')
+    #plt.plot(time4, syn_current, 'r-')
     # plt.xlabel('time (ms)')
     # plt.ylabel('voltage (mV)')
     # plt.show()
@@ -43,6 +44,7 @@ if __name__ == "__main__":
     i = 0
     for coef in mfcc[0]:
         current = np.ones(time_ita) * coef
+        print(coef)
         neuron = input_layer[i]
         time, v_plt, spike = neuron.izh_simulation(a, b, c, d, time_ita, current, c)
         spikes.append(spike)
@@ -58,11 +60,11 @@ if __name__ == "__main__":
     i = 0
     for spike in spikes:
         time = times[i]
-        syn_output = synapse(tau, time, spike)
+        syn_output = synapse().synapse(tau, time, spike)
         w = 10.
         syn_current = w * syn_output
         synapses.append(syn_current)
 
-    #I guess this is where I get stumped, 
+    #I guess this is where I get stumped,
 
-    plt.show()
+    #plt.show()
