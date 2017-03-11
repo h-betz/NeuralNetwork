@@ -1,6 +1,6 @@
 import numpy as np
 
-class synapse:
+class Synapse:
 
 
     def synapse(self, tau, time, spike):

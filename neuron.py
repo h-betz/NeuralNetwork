@@ -9,7 +9,7 @@ Pmin = -1
 Pth = 5.5
 D = 0.5
 
-class neuron:
+class Neuron:
 	def __init__(self):
 		self.Pth = Pth
 		self.t_ref = 4
