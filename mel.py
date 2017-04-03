@@ -13,10 +13,15 @@ def test(file_name):
 
 
 if __name__ == "__main__":
-    val = test("shh.wav")
-    row = val[0, :]
-    plt.plot(row, 'r')
-    val = test("kss.wav")
-    row = val[0,:]
-    plt.plot(row, 'b')
-    plt.show()
+    #print(file_name)
+    (rate, sig) = wav.read("original_audio/kss.wav")
+    mfcc_feat = mfcc(sig, rate, 1)
+    print(len(mfcc_feat))
+    print(mfcc_feat[0,:])
+    # val = test("shh.wav")
+    # row = val[0, :]
+    # plt.plot(row, 'r')
+    # val = test("kss.wav")
+    # row = val[0,:]
+    # plt.plot(row, 'b')
+    # plt.show()

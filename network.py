@@ -13,20 +13,6 @@ if __name__ == "__main__":
     time_ita = 5000
     tau = 20
     mfcc = mel.test("kss.wav")
-    # current = np.ones(time_ita) * mfcc[0,6]
-    # print(mfcc[0,10])
-    # time4, v_plt4, spike4 = neuron().izh_simulation(a, b, c, d, time_ita, current, c)
-    #syn_output = synapse(tau, time4, spike4)
-    #w = 10.
-    #syn_current = w * syn_output
-    #time5, v_plt5, spike5 = neuron.izh_simulation(a, b, c, d, time_ita, syn_current, c)
-
-    #plt.plot(time4, v_plt4, 'b-')
-    #plt.plot(time5, v_plt5, 'g-')
-    #plt.plot(time4, syn_current, 'r-')
-    # plt.xlabel('time (ms)')
-    # plt.ylabel('voltage (mV)')
-    # plt.show()
 
     #Build our input layer
     input_layer = []
@@ -49,10 +35,6 @@ if __name__ == "__main__":
             time, v_plt, spike = n.izh_simulation(a, b, c, d, time_ita, current, c)
             spikes.append(spike)
             times.append(time)
-            # plt.figure(i)
-            # plt.plot(time, v_plt)
-            # plt.xlabel('time (ms)')
-            # plt.ylabel('voltage (mV)')
         i += 1
 
     #Get synapse from each input neuron
