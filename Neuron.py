@@ -1,6 +1,5 @@
 import numpy as np
 import random
-from matplotlib import pyplot as plt
 
 global Pref, Pmin, Pth, D, Prest
 Pref = 0
