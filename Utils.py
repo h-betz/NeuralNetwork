@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import math
 from scipy.fftpack import fft
 from scipy.io import wavfile
 from numpy.lib import stride_tricks
@@ -32,32 +33,6 @@ def fourier(file_name):
     plt.show()
 
 
-def stft(sig, framesize, overlapFrac=0.5, window=np.hanning):
-    win = window(framesize)
-    hopSize = int(framesize - np.floor(overlapFrac * framesize))
-
-    #zeros at beginning (thus center of 1st window should be for sample nr. 0)
-    samples = np.append(np.zeros(np.floor(framesize/2.0)), sig)
-    #cols for windowing
-    cols = np.ceil((len(samples) - framesize) / float(hopSize)) + 1
-    #zeros at end (thus samples can be fully covered by frames)
-    samples = np.append(samples, np.zeros(framesize))
-
-    frames = stride_tricks.as_strided(samples, shape=(cols, framesize), strides=(samples.strides[0]*hopSize, copy.copy(samples.strides[0])))
-    frames *= win
-
-    return np.fft.rfft(frames)
-
-
-def logscale_spec(spec, sr=44100, factor=20.):
-    timebins, freqbins = np.shape(spec)
-
-    scale = np.linspace(0, 1, freqbins) ** factor
-    scale *= (freqbins-1)/max(scale)
-    scale = np.unique(np.round(scale))
-
-
-
 def get_features(file_name):
 
     samplerate, samples = wavfile.read(file_name)
@@ -68,11 +43,8 @@ def get_features(file_name):
 
     number_of_frames = 40
     number_of_samples = len(samples)
-    length = (duration * 1000)
-    overlap = .5
 
     left = samples.T[0]
-    #print(left[100])
 
     samples_per_frame = number_of_samples / number_of_frames
     frames = []
@@ -87,4 +59,19 @@ def get_features(file_name):
         frames.append(frame_samples)
         frame_samples = []
 
-    print(len(frames[2]))
+    spectrum = []
+    for frame in frames:
+        spectrum.append(np.log10(np.abs(fft(frame))**2))
+
+
+    w = np.fft.fft(left)
+    freqs = np.fft.fftfreq(len(w))
+    print(freqs.min(), freqs.max())
+
+    idx = np.argmax(np.abs(w))
+    freq = freqs[idx]
+    freq_in_hertz = abs(freq * rate)
+    print(freq_in_hertz)
+    #values = np.log10(np.abs(fft(left)))**2
+    #print(values[10])
+    #plt.specgram(values)
