@@ -12,12 +12,32 @@ import wave
 import contextlib
 
 
-def mfcc(file_name):
-    print(file_name)
+def mel_Freq(file_name):
+
     (rate, sig) = wavfile.read(file_name)
-    mfcc_feat = mfcc(sig, rate, 1)
-    print(len(mfcc_feat))
-    return mfcc_feat
+    number_of_frames = 40
+    samples_per_frame = len(sig) / number_of_frames
+    left = sig.T[0]
+
+    i = 0
+    x = 1
+    frames = []
+    frame_sample = []
+    for n in range(0, number_of_frames):
+        frame_sample = left[i:(samples_per_frame*x)]
+        i = samples_per_frame*x
+        x += 1
+        frames.append(frame_sample)
+
+
+    print(len(frames[1]))
+    mfcc_frames = []
+    for frame in frames:
+        mel = mfcc(frame, rate)
+        mfcc_frames.append(mel)
+
+    print(len(mfcc_frames[0]))
+    return mfcc_frames
 
 
 

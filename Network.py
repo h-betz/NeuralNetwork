@@ -14,7 +14,10 @@ if __name__ == "__main__":
     # plt.ylabel('frequency')
     # plt.xlabel('time')
     # plt.show()
-    Utils.get_features("original_audio/nng.wav")
+    #Utils.get_features("original_audio/nng.wav")
+    Utils.mel_Freq("original_audio/shh.wav")
+    Utils.mel_Freq("original_audio/kss.wav")
+    Utils.mel_Freq("original_audio/nng.wav")
     #Utils.get_features("audio/shh.wav")
     #Utils.get_features("audio/kss.wav")
 
