@@ -16,9 +16,9 @@ if __name__ == "__main__":
     #Utils.mel_Freq("original_audio/kss.wav")
     features = Utils.mel_Freq("original_audio/nng.wav")
 
-    #Build a layer of 520 input neurons (40 frames, 13 features for each frame)
+    #Build a layer of 480 input neurons (40 frames, 12 features for each frame)
     input_layer = []
-    for i in range(520):
+    for i in range(480):
         n = Neuron.Neuron()
         input_layer.append(n)
 
@@ -33,10 +33,13 @@ if __name__ == "__main__":
     #Feed features into our network
     i = 0
     for feature in features:
-        for coef in feature[0]:
-            n = input_layer[i]
-            current = np.ones(time_ita) * coef
-            time, v_plt, spike, tau = n.izh_simulation(a,b,c,d,time_ita, current, c)
-            synapses.append(Synapse.Synapse(tau, time, spike))
-            i += 1
+        for coefs in feature:
+            coefs = iter(coefs)
+            next(coefs)
+            for coef in coefs:
+                n = input_layer[i]
+                current = np.ones(time_ita) * coef
+                time, v_plt, spike, tau = n.izh_simulation(a,b,c,d,time_ita, current, c)
+                synapses.append(Synapse.Synapse(tau, time, spike))
+                i += 1
 
