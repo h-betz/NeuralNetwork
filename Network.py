@@ -1,3 +1,4 @@
+import numpy as np
 import Synapse
 import Neuron
 import Utils
@@ -6,32 +7,36 @@ from matplotlib import pyplot as plt
 
 if __name__ == "__main__":
 
-    #nng - 169
-    #shh - 199
-    #kss - 141
-    #t, abs_fft_matrix = Utils.feature_extraction("audio/shh.wav")
-    # plt.plot(t, abs_fft_matrix)
-    # plt.ylabel('frequency')
-    # plt.xlabel('time')
-    # plt.show()
-    #Utils.get_features("original_audio/nng.wav")
-    Utils.mel_Freq("original_audio/shh.wav")
-    Utils.mel_Freq("original_audio/kss.wav")
-    Utils.mel_Freq("original_audio/nng.wav")
-    #Utils.get_features("audio/shh.wav")
-    #Utils.get_features("audio/kss.wav")
+    a = 0.02
+    b = 0.2
+    c = -65.
+    d = 8.
+    time_ita = 1000  # 100ms
+    #Utils.mel_Freq("original_audio/shh.wav")
+    #Utils.mel_Freq("original_audio/kss.wav")
+    features = Utils.mel_Freq("original_audio/nng.wav")
 
-    #Build a layer of 40 input neurons
+    #Build a layer of 520 input neurons (40 frames, 13 features for each frame)
     input_layer = []
-    i = 0
-    while i < 40:
+    for i in range(520):
         n = Neuron.Neuron()
         input_layer.append(n)
-        i += 1
 
+    #Build output layer, one neuron for each letter of the alphabet
     output_layer = []
-    i = 0
-    while i < 10:
+    while i in range(26):
         n = Neuron.Neuron()
         output_layer.append(n)
-        i += 1
+
+    synapses = []
+
+    #Feed features into our network
+    i = 0
+    for feature in features:
+        for coef in feature[0]:
+            n = input_layer[i]
+            current = np.ones(time_ita) * coef
+            time, v_plt, spike, tau = n.izh_simulation(a,b,c,d,time_ita, current, c)
+            synapses.append(Synapse.Synapse(tau, time, spike))
+            i += 1
+
