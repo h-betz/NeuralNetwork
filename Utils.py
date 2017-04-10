@@ -21,9 +21,8 @@ def mel_Freq(file_name):
         rate = f.getframerate()
         duration = frames / float(rate)
 
-    number_of_frames = 40
+    number_of_frames = 20
     samples_per_frame = len(sig) / number_of_frames
-    left = sig.T[0]
 
     win_length = duration / number_of_frames
 
@@ -32,7 +31,7 @@ def mel_Freq(file_name):
     frames = []
     frame_sample = []
     for n in range(0, number_of_frames):
-        frame_sample = left[i:(samples_per_frame*x)]
+        frame_sample = sig[i:(samples_per_frame*x)]
         i = samples_per_frame*x
         x += 1
         frames.append(frame_sample)

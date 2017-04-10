@@ -19,6 +19,10 @@ class Neuron:
         self.D = D
         self.Pmin = Pmin
         self.Prest = Prest
+        self.synapses = []
+
+    def append_synapse(self, synapse):
+        self.synapses.append(synapse)
 
     def izh_simulation(self, a, b, c, d, time_ita, current, v_init):
         # a,b,c,d parameters for Izhikevich model
@@ -26,12 +30,15 @@ class Neuron:
         # current list of current for each time step
         # v_init initial voltage
         tau = 0
+        spike_times = []
         max_spike = 0
         v = v_init
+        prev_max = v
         u = v * b
         v_plt = np.zeros(time_ita)
         u_plt = np.zeros(time_ita)
         spike = np.zeros(time_ita)
+        num_spikes = 0
         tstep = 0.1  # ms
         ita = 0
         while ita < time_ita:
@@ -40,12 +47,16 @@ class Neuron:
             v += tstep * (0.04 * (v ** 2) + 5 * v + 140 - u + current[ita])
             u += tstep * a * (b * v - u)
             if v > 30.:
+                max_spike = v
+                if max_spike > prev_max:
+                    prev_max = max_spike
+                    tau = ita
                 spike[ita] = 1
                 v = c
                 u += d
-                if v > max_spike:
-                    tau = ita
-                    v = max_spike
+                num_spikes += 1
+                spike_times.append(ita)
+
             ita += 1
         time = np.arange(time_ita) * tstep
-        return time, v_plt, spike, tau
+        return time, v_plt, spike, tau, num_spikes, spike_times
