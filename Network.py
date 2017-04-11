@@ -13,15 +13,16 @@ def total_synaptic_value(neuron):
     return conductance
 
 
-if __name__ == "__main__":
+def start(fname):
 
     a = 0.02
     b = 0.2
     c = -65.
     d = 8.
     time_ita = 1000  # 100ms
-    features = Utils.mel_Freq("letter_audio/speech/isolet1/fcmc0/fcmc0-A1-t.wav")
-    features_b = Utils.mel_Freq("letter_audio/speech/isolet1/fcmc0/fcmc0-B1-t.wav")
+    features = Utils.mel_Freq(fname)
+    #features = Utils.mel_Freq("letter_audio/speech/isolet1/fcmc0/fcmc0-A1-t.wav")
+    #features_b = Utils.mel_Freq("letter_audio/speech/isolet1/fcmc0/fcmc0-B1-t.wav")
 
     #Build a layer of 240 input neurons (20 frames, 12 features for each frame)
     input_layer = []
@@ -62,5 +63,3 @@ if __name__ == "__main__":
         #current = np.ones(time_ita) * total_synaptic_value(out)
         #time, v_plt, spike, num_spikes, spike_times = out.izh_simulation(a,b,c,d,time_ita, current, c)
 
-
-    plt.show()

@@ -1,0 +1,17 @@
+import glob
+import Utils
+import Network
+
+if __name__ == "__main__":
+
+    mapping = dict()
+
+    audio_path = "letter_audio/speech/isolet1/fcmc0/*.wav"
+
+    # Get a mapping of labels to audio
+    for fname in glob.glob(audio_path):
+        mapping[fname] = Utils.get_label(fname)
+
+    for key in mapping:
+        Network.start(mapping[key])
+
