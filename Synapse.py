@@ -20,8 +20,25 @@ class Synapse:
         if delta_t < 0:
             return Apost*np.exp(delta_t/tau_post)
 
+    def anti_heb(self, delta_t):
+        tau_pre = tau_post = 20
+        Apre = 1.05
+        Apost = -Apre
+        if delta_t < 0:
+            return Apre*np.exp(-delta_t/tau_pre)
+        if delta_t > 0:
+            return Apost*np.exp(delta_t/tau_post)
 
-    def STDP(self, t_pre, t_post):
+
+    def Anti_Heb_STDP(self, t_pre, t_post):
+        delta_w = 0
+        for t_p in t_pre:
+            for t_pst in t_post:
+                delta_w += self.anti_heb(t_pst - t_p)
+        return delta_w
+
+
+    def Heb_STDP(self, t_pre, t_post):
         delta_w = 0
         for t_p in t_pre:
             for t_pst in t_post:

@@ -2,7 +2,7 @@ import numpy as np
 import random
 import Synapse
 
-global Pref, Pmin, Pth, D, Prest
+global Pref, Pmin, Pth, D, Prest, pre_times, post_times
 Pref = 0
 Prest = 0
 Pmin = -1
@@ -20,6 +20,14 @@ class Neuron:
         self.Pmin = Pmin
         self.Prest = Prest
         self.synapses = []
+        self.post_times = []
+        self.pre_times = []
+
+    def append_pre_times(self, times):
+        self.pre_times = times
+
+    def append_post_times(self, times):
+        self.post_times = times
 
     def append_synapse(self, synapse):
         self.synapses.append(synapse)
