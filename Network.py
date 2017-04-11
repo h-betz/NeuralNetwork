@@ -4,22 +4,12 @@ import Neuron
 import Utils
 from matplotlib import pyplot as plt
 
-# For some reason this isn't working...or at least doesn't appear to be
-def total_conductance(neuron):
-    conductance = 0
-    for syn_k in neuron.synapses:
-        t = 0
-        for j in range(syn_k.spikes_received):
-            conductance += (syn_k.conductance_amplitude * (t - syn_k.spike_times[j]) * np.exp(-(t - syn_k.spike_times[j])/syn_k.tau))
-            t = syn_k.spike_times[j] - t
-
-    return conductance
-
 
 def total_synaptic_value(neuron):
     conductance = 0
     for syn_k in neuron.synapses:
-        conductance += syn_k.spike
+        output = syn_k.synapse(20)
+        conductance += output
     return conductance
 
 
@@ -31,6 +21,7 @@ if __name__ == "__main__":
     d = 8.
     time_ita = 1000  # 100ms
     features = Utils.mel_Freq("letter_audio/speech/isolet1/fcmc0/fcmc0-A1-t.wav")
+    features_b = Utils.mel_Freq("letter_audio/speech/isolet1/fcmc0/fcmc0-B1-t.wav")
 
     #Build a layer of 240 input neurons (20 frames, 12 features for each frame)
     input_layer = []
@@ -40,7 +31,7 @@ if __name__ == "__main__":
 
     #Build output layer, one neuron for each letter of the alphabet
     output_layer = []
-    for i in range(26):
+    for i in range(2):
         n = Neuron.Neuron()
         output_layer.append(n)
 
@@ -54,8 +45,8 @@ if __name__ == "__main__":
             for coef in coefs:
                 n = input_layer[i]
                 current = np.ones(time_ita) * coef
-                time, v_plt, spike, tau, num_spikes, spike_times = n.izh_simulation(a,b,c,d,time_ita, current, c)
-                synapses.append(Synapse.Synapse(tau, time, spike, num_spikes, spike_times))
+                time, v_plt, spike, num_spikes, spike_times = n.izh_simulation(a,b,c,d,time_ita, current, c)
+                synapses.append(Synapse.Synapse(time, spike, num_spikes, spike_times))
                 i += 1
 
     # For each output neuron, append each of the synapses. This is important because the individual synapses are trained
@@ -63,9 +54,13 @@ if __name__ == "__main__":
     for out in output_layer:
         for syn in synapses:
             out.append_synapse(syn)
-        # for i in range(12):
-        #     syn = synapses[(12*n)+i]
-        #     syn_current = syn.synapse()
-        # n += 1
-        #print(total_conductance(out))
 
+    for out in output_layer:
+        for syn in out.synapses:
+            if len(syn.spike_times) > 0:
+                print(syn.spike_times)
+        #current = np.ones(time_ita) * total_synaptic_value(out)
+        #time, v_plt, spike, num_spikes, spike_times = out.izh_simulation(a,b,c,d,time_ita, current, c)
+
+
+    plt.show()

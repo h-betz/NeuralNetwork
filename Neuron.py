@@ -59,4 +59,4 @@ class Neuron:
 
             ita += 1
         time = np.arange(time_ita) * tstep
-        return time, v_plt, spike, tau, num_spikes, spike_times
+        return time, v_plt, spike, num_spikes, spike_times
