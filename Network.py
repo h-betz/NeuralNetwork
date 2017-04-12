@@ -42,10 +42,13 @@ class Network:
 
     def conduct_training(self, result):
         i = 0
-        for out in output_layer:
+        for out in self.output_layer:
             if i == result:
                 for syn in out.synapses:
-                    syn.Heb_STDP(out.pre_times, out.post_times)
+                    syn.Heb_STDP()
+            else:
+                for syn in out.synapses:
+                    syn.Anti_Heb_STDP()
             i += 1
 
 
@@ -72,7 +75,7 @@ class Network:
         for out in self.output_layer:
             for syn in self.synapses:
                 out.append_synapse(syn)
-                out.append_pre_times(syn.spike_times)
+                out.append_pre_times(syn.pre_spikes)
             self.output_layer[i] = out
             i += 1
 
@@ -81,10 +84,16 @@ class Network:
         for out in self.output_layer:
             current = np.ones(self.time_ita) * self.total_synaptic_value(out)
             time, v_plt, spike, num_spikes, spike_times = out.izh_simulation(self.a,self.b,self.c,self.d,self.time_ita, current, self.c)
-            out.append_post_times(spike_times)
+            for syn in out.synapses:
+                syn.set_post_spikes(spike_times)
             self.output_layer[i] = out
             if num_spikes > 0:
                 outputs[i] = 1
+            plt.figure(i)
+            plt.plot(time, v_plt)
+            plt.xlabel('time (ms)')
+            plt.ylabel('voltage (mV)')
             i += 1
 
+        plt.show()
         return outputs

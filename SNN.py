@@ -16,9 +16,11 @@ if __name__ == "__main__":
 
     for key in mapping:
         if mapping[key] == 'A':
+            print('A')
             results = network.start(key)
-            #network.conduct_training(0)
-
+            network.conduct_training(0)
         elif mapping[key] == 'B':
+            print('B')
             results = network.start(key)
+            network.conduct_training(1)
 

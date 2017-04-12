@@ -56,9 +56,6 @@ class Neuron:
             u += tstep * a * (b * v - u)
             if v > 30.:
                 max_spike = v
-                if max_spike > prev_max:
-                    prev_max = max_spike
-                    tau = ita
                 spike[ita] = 1
                 v = c
                 u += d
