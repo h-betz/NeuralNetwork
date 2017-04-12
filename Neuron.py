@@ -2,7 +2,7 @@ import numpy as np
 import random
 import Synapse
 
-global Pref, Pmin, Pth, D, Prest, pre_times, post_times
+global Pref, Pmin, Pth, D, Prest, pre_times, post_times, synapses
 Pref = 0
 Prest = 0
 Pmin = -1
@@ -22,6 +22,10 @@ class Neuron:
         self.synapses = []
         self.post_times = []
         self.pre_times = []
+        self.synapses = []
+
+    def append_synapse(self, synapse):
+        self.synapses.append(synapse)
 
     def append_pre_times(self, times):
         self.pre_times = times
@@ -37,11 +41,11 @@ class Neuron:
         # time_ita time iterations for euler method
         # current list of current for each time step
         # v_init initial voltage
-        tau = 0
+        #tau = 0
         spike_times = []
-        max_spike = 0
+        #max_spike = 0
         v = v_init
-        prev_max = v
+        #prev_max = v
         u = v * b
         v_plt = np.zeros(time_ita)
         u_plt = np.zeros(time_ita)
@@ -55,7 +59,7 @@ class Neuron:
             v += tstep * (0.04 * (v ** 2) + 5 * v + 140 - u + current[ita])
             u += tstep * a * (b * v - u)
             if v > 30.:
-                max_spike = v
+                #max_spike = v
                 spike[ita] = 1
                 v = c
                 u += d
@@ -64,4 +68,5 @@ class Neuron:
 
             ita += 1
         time = np.arange(time_ita) * tstep
+        #return time, v_plt, spike
         return time, v_plt, spike, num_spikes, spike_times

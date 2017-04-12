@@ -17,13 +17,12 @@ class Network:
         self.c = -65.
         self.d = 8.
         self.time_ita = 1000  # 100ms
+
         # Build a layer of 240 input neurons (20 frames, 12 features for each frame)
         self.input_layer = []
         for i in range(240):
             n = Neuron.Neuron()
             self.input_layer.append(n)
-
-        self.synapses = []
 
         # Build output layer, one neuron for each letter of the alphabet
         self.output_layer = []
@@ -31,7 +30,17 @@ class Network:
             n = Neuron.Neuron()
             self.output_layer.append(n)
 
+        # Append synapses between inputs and outputs
+        for n in self.input_layer:
+            for out in self.output_layer:
+                synapse = Synapse.Synapse()
+                synapse.set_out_neuron(out)
+                synapse.set_input_neuron(n)
+                n.append_synapse(synapse)
+                out.append_synapse(synapse)
 
+
+    # Get the total synaptic output for this neuron
     def total_synaptic_value(self, neuron):
         conductance = 0
         for syn_k in neuron.synapses:
@@ -66,28 +75,36 @@ class Network:
                     n = self.input_layer[i]
                     current = np.ones(self.time_ita) * coef
                     time, v_plt, spike, num_spikes, spike_times = n.izh_simulation(self.a,self.b,self.c,self.d,self.time_ita, current, self.c)
-                    self.synapses.append(Synapse.Synapse(time, spike, num_spikes, spike_times))
+
+                    # Set pre spikes for each synapse connected to this neuron
+                    for synapse in n.synapses:
+                        synapse.set_pre_spikes(spike_times)
+                        synapse.set_time(time)
+                        synapse.set_spike(spike)
                     i += 1
 
         # For each output neuron, append each of the synapses. This is important because the individual synapses are trained
         # for each neuron
-        i = 0
-        for out in self.output_layer:
-            for syn in self.synapses:
-                out.append_synapse(syn)
-                out.append_pre_times(syn.pre_spikes)
-            self.output_layer[i] = out
-            i += 1
+        # i = 0
+        # for out in self.output_layer:
+        #     for synapse in out.synapses:
+        #         out.append_synapse(synapse)
+        #         out.append_pre_times(synapse.pre_spikes)
+        #     self.output_layer[i] = out
+        #     i += 1
 
+        # Create a 2 neuron output vector
         outputs = [0] * 2
         i = 0
         for out in self.output_layer:
             current = np.ones(self.time_ita) * self.total_synaptic_value(out)
             time, v_plt, spike, num_spikes, spike_times = out.izh_simulation(self.a,self.b,self.c,self.d,self.time_ita, current, self.c)
+
             for syn in out.synapses:
                 syn.set_post_spikes(spike_times)
-            self.output_layer[i] = out
-            if num_spikes > 0:
+
+            #self.output_layer[i] = out
+            if np.mean(spike) != 0:
                 outputs[i] = 1
             plt.figure(i)
             plt.plot(time, v_plt)
