@@ -22,7 +22,7 @@ def mel_Freq(file_name):
         rate = f.getframerate()
         duration = frames / float(rate)
 
-    number_of_frames = 20
+    number_of_frames = 10
     samples_per_frame = len(sig) / number_of_frames
 
     win_length = duration / number_of_frames
@@ -47,7 +47,7 @@ def mel_Freq(file_name):
 
 # Get label associtaed with this file
 def get_label(filename):
-    ntpath.basename("letter_audio/speech/isolet1/fcmc0/*.wav")
+    #ntpath.basename("letter_audio/speech/isolet1/fcmc0/*.wav")
     head, tail = ntpath.split(filename)
     start = tail.index('-')
     tail = tail[(start+1):]

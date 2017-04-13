@@ -1,6 +1,8 @@
 import glob
+import os
 import Utils
 import Network
+from matplotlib import pyplot as plt
 
 if __name__ == "__main__":
 
@@ -8,19 +10,31 @@ if __name__ == "__main__":
 
     mapping = dict()
 
-    audio_path = "letter_audio/speech/isolet1/fcmc0/*.wav"
+    audio_path = "letter_audio/speech/isolet1"
+
+    # Gets list of all audio files in the directory
+    audio = [os.path.join(root, name)
+                 for root, dirs, files in os.walk(audio_path)
+                 for name in files
+                 if name.endswith((".wav"))]
+
 
     # Get a mapping of labels to audio
-    for fname in glob.glob(audio_path):
+    for fname in audio:
         mapping[fname] = Utils.get_label(fname)
 
     for key in mapping:
         if mapping[key] == 'A':
-            print('A')
+            print('Input A')
             results = network.start(key)
+            print('\t\tA: ' + str(results[0]))
+            print('\t\tB: ' + str(results[1]))
             network.conduct_training(0)
         elif mapping[key] == 'B':
-            print('B')
+            print('Input B')
             results = network.start(key)
+            print('\t\tA: ' + str(results[0]))
+            print('\t\tB: ' + str(results[1]))
             network.conduct_training(1)
+
 

@@ -24,9 +24,6 @@ class Neuron:
         self.pre_times = []
         self.synapses = []
 
-    def append_synapse(self, synapse):
-        self.synapses.append(synapse)
-
     def append_pre_times(self, times):
         self.pre_times = times
 

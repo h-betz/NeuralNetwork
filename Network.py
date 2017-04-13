@@ -18,9 +18,9 @@ class Network:
         self.d = 8.
         self.time_ita = 1000  # 100ms
 
-        # Build a layer of 240 input neurons (20 frames, 12 features for each frame)
+        # Build a layer of 120 input neurons (10 frames, 12 features for each frame)
         self.input_layer = []
-        for i in range(240):
+        for i in range(120):
             n = Neuron.Neuron()
             self.input_layer.append(n)
 
@@ -30,7 +30,7 @@ class Network:
             n = Neuron.Neuron()
             self.output_layer.append(n)
 
-        # Append synapses between inputs and outputs
+        # For each input neuron, append one synapse to each output neuron
         for n in self.input_layer:
             for out in self.output_layer:
                 synapse = Synapse.Synapse()
@@ -52,10 +52,20 @@ class Network:
     def conduct_training(self, result):
         i = 0
         for out in self.output_layer:
+            # Undergo Hebbian STDP for the correct synapses
             if i == result:
+                if result == 0:
+                    print('\tHebbian STDP for A')
+                else:
+                    print('\tHebbian STDP for B')
                 for syn in out.synapses:
                     syn.Heb_STDP()
             else:
+                # Undergo anti-Hebbian STDP for non-target synapses
+                if result == 0:
+                    print('\tanti-Hebbian STDP for B')
+                else:
+                    print('\tanti-Hebbian STDP for A')
                 for syn in out.synapses:
                     syn.Anti_Heb_STDP()
             i += 1
@@ -93,13 +103,7 @@ class Network:
             for syn in out.synapses:
                 syn.set_post_spikes(spike_times)
 
-            #self.output_layer[i] = out
-            if np.mean(spike) != 0:
-                outputs[i] = 1
-            plt.figure(i)
-            plt.plot(time, v_plt)
-            plt.xlabel('time (ms)')
-            plt.ylabel('voltage (mV)')
+            outputs[i] = num_spikes
             i += 1
 
         plt.show()
