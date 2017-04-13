@@ -60,7 +60,7 @@ class Network:
                     syn.Anti_Heb_STDP()
             i += 1
 
-
+    # Perform analysis on the given filename
     def start(self, fname):
 
         features = Utils.mel_Freq(fname)
@@ -82,16 +82,6 @@ class Network:
                         synapse.set_time(time)
                         synapse.set_spike(spike)
                     i += 1
-
-        # For each output neuron, append each of the synapses. This is important because the individual synapses are trained
-        # for each neuron
-        # i = 0
-        # for out in self.output_layer:
-        #     for synapse in out.synapses:
-        #         out.append_synapse(synapse)
-        #         out.append_pre_times(synapse.pre_spikes)
-        #     self.output_layer[i] = out
-        #     i += 1
 
         # Create a 2 neuron output vector
         outputs = [0] * 2

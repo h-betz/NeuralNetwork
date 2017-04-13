@@ -62,7 +62,6 @@ class Synapse:
             for t_post in self.post_spikes:
                 delta_w += self.anti_heb(t_post - t_pre)
         self.w += delta_w
-        print('Anti-Heb: ', self.w)
 
 
     # Change in synaptic weight is the sum over all presynaptic spike times (t_pre) and postsynaptic spike times (t_post)
@@ -73,7 +72,6 @@ class Synapse:
             for t_post in self.post_spikes:
                 delta_w += self.synaptic_weight_func(t_post - t_pre)
         self.w += delta_w
-        print('Heb: ', self.w)
 
 
     # Calculates synaptic output
