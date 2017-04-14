@@ -22,7 +22,7 @@ def mel_Freq(file_name):
         rate = f.getframerate()
         duration = frames / float(rate)
 
-    number_of_frames = 10
+    number_of_frames = 20
     samples_per_frame = len(sig) / number_of_frames
 
     win_length = duration / number_of_frames
@@ -44,6 +44,17 @@ def mel_Freq(file_name):
         mfcc_frames.append(mel)
 
     return mfcc_frames
+
+def get_features(file_name):
+    (rate, sig) = wavfile.read(file_name)
+
+    with contextlib.closing(wave.open(file_name, 'r')) as f:
+        frames = f.getnframes()
+        rate = f.getframerate()
+        duration = frames / float(rate)
+
+    return mfcc(sig, rate, duration)
+
 
 # Get label associtaed with this file
 def get_label(filename):

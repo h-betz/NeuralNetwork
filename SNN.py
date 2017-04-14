@@ -24,17 +24,17 @@ if __name__ == "__main__":
         mapping[fname] = Utils.get_label(fname)
 
     for key in mapping:
-        if mapping[key] == 'A':
-            print('Input A')
+        if mapping[key] == 'H':
+            print(mapping[key])
             results = network.start(key)
-            print('\t\tA: ' + str(results[0]))
-            print('\t\tB: ' + str(results[1]))
+            print('\tH: ' + str(results[0]))
+            print('\tF: ' + str(results[1]))
             network.conduct_training(0)
-        elif mapping[key] == 'B':
-            print('Input B')
+        elif mapping[key] == 'F':
+            print(mapping[key])
             results = network.start(key)
-            print('\t\tA: ' + str(results[0]))
-            print('\t\tB: ' + str(results[1]))
+            print('\tH: ' + str(results[0]))
+            print('\tF: ' + str(results[1]))
             network.conduct_training(1)
 
 

@@ -9,7 +9,8 @@ class Synapse:
     def __init__(self):
         self.post_spikes = []
         self.pre_spikes = []
-        self.w = random.uniform(0, 1)
+        #self.w = random.uniform(0, 1)
+        self.w = .5
 
     # def __init__(self, time, spike, spike_times):
     #     self.spike = spike
@@ -40,7 +41,7 @@ class Synapse:
     # Our W function for Hebbian STDP
     def synaptic_weight_func(self, delta_t):
         tau_pre = tau_post = 20
-        Apre = .05
+        Apre = .10
         Apost = -Apre
         if delta_t >= 0:
             return Apre*np.exp(-np.abs(delta_t/tau_pre))
@@ -50,7 +51,7 @@ class Synapse:
     # Our W function for anti-Hebbian STDP
     def anti_heb(self, delta_t):
         tau_pre = tau_post = 20
-        Apre = .05
+        Apre = .10
         Apost = -Apre
         if delta_t < 0:
             return Apre*np.exp(-np.abs(delta_t/tau_pre))

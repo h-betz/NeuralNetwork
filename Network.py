@@ -20,7 +20,7 @@ class Network:
 
         # Build a layer of 120 input neurons (10 frames, 12 features for each frame)
         self.input_layer = []
-        for i in range(120):
+        for i in range(240):
             n = Neuron.Neuron()
             self.input_layer.append(n)
 
@@ -48,24 +48,17 @@ class Network:
             conductance += output
         return conductance
 
-
+    # if result == 0, then our target neuron is the first neuron in the output layer
+    # result == 1 --> 2nd output neuron, result == 3 --> 3rd output neuron and so on
     def conduct_training(self, result):
         i = 0
         for out in self.output_layer:
-            # Undergo Hebbian STDP for the correct synapses
             if i == result:
-                if result == 0:
-                    print('\tHebbian STDP for A')
-                else:
-                    print('\tHebbian STDP for B')
+                # Undergo Hebbian STDP
                 for syn in out.synapses:
                     syn.Heb_STDP()
             else:
                 # Undergo anti-Hebbian STDP for non-target synapses
-                if result == 0:
-                    print('\tanti-Hebbian STDP for B')
-                else:
-                    print('\tanti-Hebbian STDP for A')
                 for syn in out.synapses:
                     syn.Anti_Heb_STDP()
             i += 1
@@ -77,6 +70,7 @@ class Network:
 
         #Feed features into our network and get spike information (number of spikes, time of largest spike)
         i = 0
+
         for feature in features:
             for coefs in feature:
                 coefs = iter(coefs)
@@ -106,5 +100,4 @@ class Network:
             outputs[i] = num_spikes
             i += 1
 
-        plt.show()
         return outputs
