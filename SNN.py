@@ -80,29 +80,29 @@ def print_result(results):
     print('\tA: ' + str(results[0]))
     print('\tB: ' + str(results[1]))
     print('\tX: ' + str(results[2]))
-    # print('\tD: ' + str(results[3]))
-    # print('\tE: ' + str(results[4]))
-    # print('\tF: ' + str(results[5]))
-    # print('\tG: ' + str(results[6]))
-    # print('\tH: ' + str(results[7]))
-    # print('\tI: ' + str(results[8]))
-    # print('\tJ: ' + str(results[9]))
-    # print('\tK: ' + str(results[10]))
-    # print('\tL: ' + str(results[11]))
-    # print('\tM: ' + str(results[12]))
-    # print('\tN: ' + str(results[13]))
-    # print('\tO: ' + str(results[14]))
-    # print('\tP: ' + str(results[15]))
-    # print('\tQ: ' + str(results[16]))
-    # print('\tR: ' + str(results[17]))
-    # print('\tS: ' + str(results[18]))
-    # print('\tT: ' + str(results[19]))
-    # print('\tU: ' + str(results[20]))
-    # print('\tV: ' + str(results[21]))
-    # print('\tW: ' + str(results[22]))
-    # print('\tX: ' + str(results[23]))
-    # print('\tY: ' + str(results[24]))
-    # print('\tZ: ' + str(results[25]))
+    print('\tD: ' + str(results[3]))
+    print('\tE: ' + str(results[4]))
+    print('\tF: ' + str(results[5]))
+    print('\tG: ' + str(results[6]))
+    print('\tH: ' + str(results[7]))
+    print('\tI: ' + str(results[8]))
+    print('\tJ: ' + str(results[9]))
+    print('\tK: ' + str(results[10]))
+    print('\tL: ' + str(results[11]))
+    print('\tM: ' + str(results[12]))
+    print('\tN: ' + str(results[13]))
+    print('\tO: ' + str(results[14]))
+    print('\tP: ' + str(results[15]))
+    print('\tQ: ' + str(results[16]))
+    print('\tR: ' + str(results[17]))
+    print('\tS: ' + str(results[18]))
+    print('\tT: ' + str(results[19]))
+    print('\tU: ' + str(results[20]))
+    print('\tV: ' + str(results[21]))
+    print('\tW: ' + str(results[22]))
+    print('\tX: ' + str(results[23]))
+    print('\tY: ' + str(results[24]))
+    print('\tZ: ' + str(results[25]))
 
 # Generate a spike train from the given spike
 def generate_prototypes(spike, key):
@@ -114,7 +114,6 @@ def generate_prototypes(spike, key):
         prototype_trains[1] = spike_train
     elif key == 'X':
         prototype_trains[2] = spike_train
-    #prototype_trains.append(spike_train)
 
 def spike_analysis(spikes, value):
     distances = []
@@ -212,8 +211,6 @@ def test():
                 generate_prototypes(spikes[2], 'X')
             elif a_count == 0 and b_count == 0 and x_count == 0:
                 spike_analysis(spikes)
-                #show_plots(time, v_plts, currents, spikes)
-                #spike_analysis(spikes)
         elif count == 0:
             print(key)
             value = ''
@@ -230,7 +227,7 @@ def test():
 
 # Train the network
 def train():
-    network = Network.Network()
+    network = Network.Network(weights=None)
 
     mapping = dict()
 
@@ -249,12 +246,6 @@ def train():
               if name.endswith((".wav"))]
 
     audio.extend(audio2)
-    # audio_path = "letter_audio/speech/isolet3"
-    # audio3 = [os.path.join(root, name)
-    #              for root, dirs, files in os.walk(audio_path)
-    #              for name in files
-    #              if name.endswith((".wav"))]
-    # audio.extend(audio3)
 
     shuffle(audio)
 
@@ -263,10 +254,34 @@ def train():
         mapping[fname] = Utils.get_label(fname)
 
     print(datetime.now())
-    count = 30
-    x_count = 35
-    a_count = 35
-    b_count = 35
+
+    a_count = 20
+    b_count = 20
+    c_count = 20
+    d_count = 20
+    e_count = 20
+    f_count = 20
+    g_count = 20
+    h_count = 20
+    i_count = 20
+    j_count = 20
+    k_count = 20
+    l_count = 20
+    m_count = 20
+    n_count = 20
+    o_count = 20
+    p_count = 20
+    q_count = 20
+    r_count = 20
+    s_count = 20
+    t_count = 20
+    u_count = 20
+    v_count = 20
+    w_count = 20
+    x_count = 20
+    y_count = 20
+    z_count = 20
+
     for key in mapping:
         if mapping[key] == 'A' and a_count > 0:
             print(key)
@@ -274,395 +289,168 @@ def train():
             print_result(results)
             network.conduct_training(0)
             a_count -= 1
-            if a_count == 0 and b_count == 0 and x_count == 0:
-                show_plots(time, v_plts, currents, spikes)
-                write_weights(network)
         elif mapping[key] == 'B' and b_count > 0:
             print(key)
             results, currents, time, v_plts, spikes = network.start(key)
             print_result(results)
             network.conduct_training(1)
             b_count -= 1
-            if a_count == 0 and b_count == 0 and x_count == 0:
-                show_plots(time, v_plts, currents, spikes)
-                write_weights(network)
-        elif mapping[key] == 'X' and x_count > 0:
+        elif mapping[key] == 'C' and c_count > 0:
             print(key)
             results, currents, time, v_plts, spikes = network.start(key)
             print_result(results)
             network.conduct_training(2)
+            c_count -= 1
+        elif mapping[key] == 'D' and d_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(3)
+            d_count -= 1
+        elif mapping[key] == 'E' and e_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(4)
+            e_count -= 1
+        elif mapping[key] == 'F' and f_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(5)
+            f_count -= 1
+        elif mapping[key] == 'G' and g_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(6)
+            g_count -= 1
+        elif mapping[key] == 'H' and h_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(7)
+            h_count -= 1
+        elif mapping[key] == 'I' and i_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(8)
+            i_count -= 1
+        elif mapping[key] == 'J' and j_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(9)
+            j_count -= 1
+        elif mapping[key] == 'K' and k_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(10)
+            k_count -= 1
+        elif mapping[key] == 'L' and l_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(11)
+            l_count -= 1
+        elif mapping[key] == 'M' and m_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(12)
+            m_count -= 1
+        elif mapping[key] == 'N' and n_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(13)
+            n_count -= 1
+        elif mapping[key] == 'O' and o_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(14)
+            o_count -= 1
+        elif mapping[key] == 'P' and p_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(15)
+            p_count -= 1
+        elif mapping[key] == 'Q' and q_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(16)
+            q_count -= 1
+        elif mapping[key] == 'R' and r_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(17)
+            r_count -= 1
+        elif mapping[key] == 'S' and s_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(18)
+            s_count -= 1
+        elif mapping[key] == 'T' and t_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(19)
+            t_count -= 1
+        elif mapping[key] == 'U' and u_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(20)
+            u_count -= 1
+        elif mapping[key] == 'V' and v_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(21)
+            v_count -= 1
+        elif mapping[key] == 'W' and w_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(22)
+            w_count -= 1
+        elif mapping[key] == 'X' and x_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(23)
             x_count -= 1
-            if x_count == 0 and a_count == 0 and b_count == 0:
-                show_plots(time, v_plts, currents, spikes)
-                write_weights(network)
-                # elif mapping[key] == 'D':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(3)
-                # elif mapping[key] == 'E':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(4)
-                # elif mapping[key] == 'F':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(5)
-                # elif mapping[key] == 'G':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(6)
-                # elif mapping[key] == 'H':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(7)
-                # elif mapping[key] == 'I':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(8)
-                # elif mapping[key] == 'J':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(9)
-                # elif mapping[key] == 'K':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(10)
-                # elif mapping[key] == 'L':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(11)
-                # elif mapping[key] == 'M':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(12)
-                # elif mapping[key] == 'N':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(13)
-                # elif mapping[key] == 'O':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(14)
-                # elif mapping[key] == 'P':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(15)
-                # elif mapping[key] == 'Q':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(16)
-                # elif mapping[key] == 'R':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(17)
-                # elif mapping[key] == 'S':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(18)
-                # elif mapping[key] == 'T':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(19)
-                # elif mapping[key] == 'U':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(20)
-                # elif mapping[key] == 'V':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(21)
-                # elif mapping[key] == 'W':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(22)
-                # elif mapping[key] == 'X':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(23)
-                # elif mapping[key] == 'Y':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(24)
-                # elif mapping[key] == 'Z':
-                #     print(key)
-                #     results = network.start(key)
-                #     print_result(results)
-                #     network.conduct_training(25)
+        elif mapping[key] == 'Y' and y_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(24)
+            y_count -= 1
+        elif mapping[key] == 'Z' and z_count > 0:
+            print(key)
+            results = network.start(key)
+            print_result(results)
+            network.conduct_training(25)
+            z_count -= 1
 
+    write_weights(network)
     print(datetime.now())
 
 
 if __name__ == "__main__":
-    prototype_trains = []
     if len(sys.argv) > 1:
-        test()
-    else:
-        train()
-    # network = Network.Network()
-    #
-    # mapping = dict()
-    #
-    # audio_path = "letter_audio/speech/isolet1"
-    #
-    # # Gets list of all audio files in the directory
-    # audio = [os.path.join(root, name)
-    #              for root, dirs, files in os.walk(audio_path)
-    #              for name in files
-    #              if name.endswith((".wav"))]
-    #
-    # audio_path = "letter_audio/speech/isolet2"
-    # audio2 = [os.path.join(root, name)
-    #              for root, dirs, files in os.walk(audio_path)
-    #              for name in files
-    #              if name.endswith((".wav"))]
-    #
-    # audio.extend(audio2)
-    # audio_path = "letter_audio/speech/isolet3"
-    # audio3 = [os.path.join(root, name)
-    #              for root, dirs, files in os.walk(audio_path)
-    #              for name in files
-    #              if name.endswith((".wav"))]
-    # audio.extend(audio3)
-
-    #shuffle(audio)
-
-
-    # audio_path = "letter_audio/speech/isolet4"
-    # audio4 = [os.path.join(root, name)
-    #              for root, dirs, files in os.walk(audio_path)
-    #              for name in files
-    #              if name.endswith((".wav"))]
-    # audio.extend(audio4)
-
-    # Get a mapping of labels to audio
-    # for fname in audio:
-    #     mapping[fname] = Utils.get_label(fname)
-    #
-    # print(datetime.now())
-    # count = 30
-    # x_count = 35
-    # a_count = 35
-    # b_count = 35
-    # for key in mapping:
-    #     if mapping[key] == 'A' and a_count > 0:
-    #         print(key)
-    #         results, currents, time, v_plts, spikes = network.start(key)
-    #         print_result(results)
-    #         network.conduct_training(0)
-    #         a_count -= 1
-    #         if a_count == 0 and b_count == 0 and x_count == 0:
-    #             plt.figure('A')
-    #             plt.plot(time, v_plts[0], 'g-')
-    #             plt.plot(time, currents[0], 'r-')
-    #             plt.figure('B')
-    #             plt.plot(time, v_plts[1], 'b-')
-    #             plt.plot(time, currents[1], 'y-')
-    #             plt.figure('X')
-    #             plt.plot(time, v_plts[2], 'k-')
-    #             plt.plot(time, currents[2], 'm-')
-    #             plt.figure('All')
-    #             plt.plot(time, v_plts[0], 'g-')
-    #             plt.plot(time, currents[0], 'r-')
-    #             plt.plot(time, v_plts[1], 'b-')
-    #             plt.plot(time, currents[1], 'y-')
-    #             plt.plot(time, v_plts[2], 'k-')
-    #             plt.plot(time, currents[2], 'm-')
-    #             sp = spikeplot.SpikePlot()
-    #             sp.plot_spikes(spikes)
-    #             plt.show()
-    #             write_weights()
-    #     elif mapping[key] == 'B' and b_count > 0:
-    #         print(key)
-    #         results, currents, time, v_plts, spikes = network.start(key)
-    #         print_result(results)
-    #         network.conduct_training(1)
-    #         b_count -= 1
-    #         if a_count == 0 and b_count == 0 and x_count == 0:
-    #             plt.figure('A')
-    #             plt.plot(time, v_plts[0], 'g-')
-    #             plt.plot(time, currents[0], 'r-')
-    #             plt.figure('B')
-    #             plt.plot(time, v_plts[1], 'b-')
-    #             plt.plot(time, currents[1], 'y-')
-    #             plt.figure('X')
-    #             plt.plot(time, v_plts[2], 'k-')
-    #             plt.plot(time, currents[2], 'm-')
-    #             plt.figure('All')
-    #             plt.plot(time, v_plts[0], 'g-')
-    #             plt.plot(time, currents[0], 'r-')
-    #             plt.plot(time, v_plts[1], 'b-')
-    #             plt.plot(time, currents[1], 'y-')
-    #             plt.plot(time, v_plts[2], 'k-')
-    #             plt.plot(time, currents[2], 'm-')
-    #             sp = spikeplot.SpikePlot()
-    #             sp.plot_spikes(spikes)
-    #             plt.show()
-    #             write_weights()
-    #     elif mapping[key] == 'X' and x_count > 0:
-    #         print(key)
-    #         results, currents, time, v_plts, spikes = network.start(key)
-    #         print_result(results)
-    #         network.conduct_training(2)
-    #         x_count -= 1
-    #         if x_count == 0 and a_count == 0 and b_count == 0:
-    #             plt.figure('A')
-    #             plt.plot(time, v_plts[0], 'g-')
-    #             plt.plot(time, currents[0], 'r-')
-    #             plt.figure('B')
-    #             plt.plot(time, v_plts[1], 'b-')
-    #             plt.plot(time, currents[1], 'y-')
-    #             plt.figure('X')
-    #             plt.plot(time, v_plts[2], 'k-')
-    #             plt.plot(time, currents[2], 'm-')
-    #             plt.figure('All')
-    #             plt.plot(time, v_plts[0], 'g-')
-    #             plt.plot(time, currents[0], 'r-')
-    #             plt.plot(time, v_plts[1], 'b-')
-    #             plt.plot(time, currents[1], 'y-')
-    #             plt.plot(time, v_plts[2], 'k-')
-    #             plt.plot(time, currents[2], 'm-')
-    #             sp = spikeplot.SpikePlot()
-    #             sp.plot_spikes(spikes)
-    #             plt.show()
-    #             write_weights()
-        # elif mapping[key] == 'D':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(3)
-        # elif mapping[key] == 'E':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(4)
-        # elif mapping[key] == 'F':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(5)
-        # elif mapping[key] == 'G':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(6)
-        # elif mapping[key] == 'H':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(7)
-        # elif mapping[key] == 'I':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(8)
-        # elif mapping[key] == 'J':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(9)
-        # elif mapping[key] == 'K':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(10)
-        # elif mapping[key] == 'L':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(11)
-        # elif mapping[key] == 'M':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(12)
-        # elif mapping[key] == 'N':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(13)
-        # elif mapping[key] == 'O':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(14)
-        # elif mapping[key] == 'P':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(15)
-        # elif mapping[key] == 'Q':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(16)
-        # elif mapping[key] == 'R':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(17)
-        # elif mapping[key] == 'S':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(18)
-        # elif mapping[key] == 'T':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(19)
-        # elif mapping[key] == 'U':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(20)
-        # elif mapping[key] == 'V':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(21)
-        # elif mapping[key] == 'W':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(22)
-        # elif mapping[key] == 'X':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(23)
-        # elif mapping[key] == 'Y':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(24)
-        # elif mapping[key] == 'Z':
-        #     print(key)
-        #     results = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(25)
-
-    print(datetime.now())
+        if sys.argv[1] == 'train':
+            print('Training...')
+            train()
+        else:
+            print('Testing')
+            test()
 
 
