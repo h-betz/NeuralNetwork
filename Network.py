@@ -13,7 +13,7 @@ global a, b, c, d, time_ita
 
 class Network:
 
-    def __init__(self):
+    def __init__(self, weights):
         # self.a = 0.03
         # self.b = -2
         # self.c = -50.
@@ -32,7 +32,7 @@ class Network:
 
         # Build output layer, one neuron for each letter of the alphabet
         self.output_layer = []
-        for i in range(2):
+        for i in range(3):
             o = Neuron.Neuron()
             self.output_layer.append(o)
 
@@ -43,6 +43,24 @@ class Network:
                 synapse = Synapse.Synapse()
                 n.append_synapse(synapse)
                 out.append_synapse(synapse)
+
+        if weights is not None:
+            i = 0
+            n = 0
+            s = 0
+            with open(weights) as f:
+                for line in f:
+                    # For every 520 synapses, go to the next neuron
+                    if i % 520 == 0 and n < len(self.output_layer):
+                        s = 0
+                        out = self.output_layer[n]
+                        n += 1
+                        out.synapses[s].set_weight(line)
+                        s += 1
+                    elif s < 520:
+                        out.synapses[s].set_weight(line)
+                        s += 1
+                    i += 1
 
     # Calculates the current from the given MFCC value
     def get_current(self, x):
@@ -114,8 +132,6 @@ class Network:
 
         features = Utils.get_mel(fname)
         features = features[:520]
-        # features = Utils.get_features(fname)
-        # features = features[:240]
 
         #Feed features into our network and get spike information (number of spikes, time of largest spike)
         i = 0
@@ -137,7 +153,7 @@ class Network:
 
 
         # Create a 3 neuron output vector
-        outputs = [0] * 2
+        outputs = [0] * 3
         spikes = []
         v_plts = []
         currents = []

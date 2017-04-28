@@ -1,12 +1,17 @@
 from random import shuffle
 import os
+import sys
 import Utils
 import Network
+import pyspike as spk
+from pyspike import SpikeTrain
 from datetime import datetime
 from matplotlib import pyplot as plt
 from neuronpy.graphics import spikeplot
 
-def write_weights():
+prototype_trains = [None] * 3
+
+def write_weights(network):
     i = 0
     with open("weights.txt", "a") as f:
         for out in network.output_layer:
@@ -74,7 +79,7 @@ def write_weights():
 def print_result(results):
     print('\tA: ' + str(results[0]))
     print('\tB: ' + str(results[1]))
-    #print('\tX: ' + str(results[2]))
+    print('\tX: ' + str(results[2]))
     # print('\tD: ' + str(results[3]))
     # print('\tE: ' + str(results[4]))
     # print('\tF: ' + str(results[5]))
@@ -99,9 +104,132 @@ def print_result(results):
     # print('\tY: ' + str(results[24]))
     # print('\tZ: ' + str(results[25]))
 
+# Generate a spike train from the given spike
+def generate_prototypes(spike, key):
+    global prototype_trains
+    spike_train = SpikeTrain(spike, [0.0, 300.0])
+    if key == 'A':
+        prototype_trains[0] = spike_train
+    elif key == 'B':
+        prototype_trains[1] = spike_train
+    elif key == 'X':
+        prototype_trains[2] = spike_train
+    #prototype_trains.append(spike_train)
 
-if __name__ == "__main__":
+def spike_analysis(spikes, value):
+    distances = []
+    i = 0
+    for spike in spikes:
+        spike_train = SpikeTrain(spike, [0.0, 300.0])
+        isi_profile = spk.spike_sync(prototype_trains[i], spike_train)
+        distances.append(isi_profile)
+        i += 1
 
+    val, idx = max((val, idx) for (idx, val) in enumerate(distances))
+    print("Distance: %.8f" % val)
+    print("Index: %s" % idx)
+
+
+def show_plots(time, v_plts, currents, spikes):
+    plt.figure('A')
+    plt.plot(time, v_plts[0], 'g-')
+    plt.plot(time, currents[0], 'r-')
+    plt.figure('B')
+    plt.plot(time, v_plts[1], 'b-')
+    plt.plot(time, currents[1], 'y-')
+    plt.figure('X')
+    plt.plot(time, v_plts[2], 'k-')
+    plt.plot(time, currents[2], 'm-')
+    plt.figure('All')
+    plt.plot(time, v_plts[0], 'g-')
+    plt.plot(time, currents[0], 'r-')
+    plt.plot(time, v_plts[1], 'b-')
+    plt.plot(time, currents[1], 'y-')
+    plt.plot(time, v_plts[2], 'k-')
+    plt.plot(time, currents[2], 'm-')
+    sp = spikeplot.SpikePlot()
+    sp.plot_spikes(spikes)
+    plt.show()
+
+# Test our network
+def test():
+    global prototype_trains
+    prototype_trains = [None] * 3
+    mapping = dict()
+
+    weights = "weights.txt"
+
+    network = Network.Network(weights=weights)
+    audio_path = "letter_audio/speech/isolet3"
+
+    audio = [os.path.join(root, name)
+                 for root, dirs, files in os.walk(audio_path)
+                 for name in files
+                 if name.endswith((".wav"))]
+
+    for fname in audio:
+        mapping[fname] = Utils.get_label(fname)
+
+    a_count = 1
+    b_count = 1
+    x_count = 1
+    count = 3
+    for key in mapping:
+        if mapping[key] == 'A' and a_count != 0:
+            print(key)
+            results, currents, time, v_plts, spikes = network.start(key)
+            print_result(results)
+            a_count -= 1
+            count -= 1
+            if a_count == 0:
+                # Generate a spike train for the 'A' sound
+                generate_prototypes(spikes[0], 'A')
+            elif a_count == 0 and b_count == 0 and x_count == 0:
+                spike_analysis(spikes)
+                #show_plots(time, v_plts, currents, spikes)
+                #spike_analysis(spikes)
+        elif mapping[key] == 'B' and b_count != 0:
+            print(key)
+            results, currents, time, v_plts, spikes = network.start(key)
+            print_result(results)
+            b_count -= 1
+            count -= 1
+            if b_count == 0:
+                # Generate a spike train for the 'B' sound
+                generate_prototypes(spikes[1], 'B')
+            elif a_count == 0 and b_count == 0 and x_count == 0:
+                spike_analysis(spikes)
+                #show_plots(time, v_plts, currents, spikes)
+                #spike_analysis(spikes)
+        elif mapping[key] == 'X' and x_count != 0:
+            print(key)
+            results, currents, time, v_plts, spikes = network.start(key)
+            print_result(results)
+            x_count -= 1
+            count -= 1
+            if x_count == 0:
+                # Generate a spike train for the 'X' sound
+                generate_prototypes(spikes[2], 'X')
+            elif a_count == 0 and b_count == 0 and x_count == 0:
+                spike_analysis(spikes)
+                #show_plots(time, v_plts, currents, spikes)
+                #spike_analysis(spikes)
+        elif count == 0:
+            print(key)
+            value = ''
+            if mapping[key] == 'A':
+                value = 'A'
+            elif mapping[key] == 'B':
+                value = 'B'
+            elif mapping[key] == 'X':
+                value = 'X'
+            results, currents, time, v_plts, spikes = network.start(key)
+            print_result(results)
+            spike_analysis(spikes, value)
+
+
+# Train the network
+def train():
     network = Network.Network()
 
     mapping = dict()
@@ -110,15 +238,15 @@ if __name__ == "__main__":
 
     # Gets list of all audio files in the directory
     audio = [os.path.join(root, name)
-                 for root, dirs, files in os.walk(audio_path)
-                 for name in files
-                 if name.endswith((".wav"))]
+             for root, dirs, files in os.walk(audio_path)
+             for name in files
+             if name.endswith((".wav"))]
 
     audio_path = "letter_audio/speech/isolet2"
     audio2 = [os.path.join(root, name)
-                 for root, dirs, files in os.walk(audio_path)
-                 for name in files
-                 if name.endswith((".wav"))]
+              for root, dirs, files in os.walk(audio_path)
+              for name in files
+              if name.endswith((".wav"))]
 
     audio.extend(audio2)
     # audio_path = "letter_audio/speech/isolet3"
@@ -130,21 +258,13 @@ if __name__ == "__main__":
 
     shuffle(audio)
 
-
-    # audio_path = "letter_audio/speech/isolet4"
-    # audio4 = [os.path.join(root, name)
-    #              for root, dirs, files in os.walk(audio_path)
-    #              for name in files
-    #              if name.endswith((".wav"))]
-    # audio.extend(audio4)
-
     # Get a mapping of labels to audio
     for fname in audio:
         mapping[fname] = Utils.get_label(fname)
 
     print(datetime.now())
     count = 30
-    #x_count = 15
+    x_count = 35
     a_count = 35
     b_count = 35
     for key in mapping:
@@ -154,60 +274,279 @@ if __name__ == "__main__":
             print_result(results)
             network.conduct_training(0)
             a_count -= 1
-            if a_count == 0 and b_count == 0:
-                plt.figure('A')
-                plt.plot(time, v_plts[0], 'g-')
-                plt.plot(time, currents[0], 'r-')
-                plt.figure('B')
-                plt.plot(time, v_plts[1], 'b-')
-                plt.plot(time, currents[1], 'y-')
-                # plt.figure('X')
-                # plt.plot(time, v_plts[2], 'k-')
-                # plt.plot(time, currents[2], 'm-')
-                sp = spikeplot.SpikePlot()
-                sp.plot_spikes(spikes)
-                plt.show()
-                write_weights()
+            if a_count == 0 and b_count == 0 and x_count == 0:
+                show_plots(time, v_plts, currents, spikes)
+                write_weights(network)
         elif mapping[key] == 'B' and b_count > 0:
             print(key)
             results, currents, time, v_plts, spikes = network.start(key)
             print_result(results)
             network.conduct_training(1)
             b_count -= 1
-            if a_count == 0 and b_count == 0:
-                plt.figure('A')
-                plt.plot(time, v_plts[0], 'g-')
-                plt.plot(time, currents[0], 'r-')
-                plt.figure('B')
-                plt.plot(time, v_plts[1], 'b-')
-                plt.plot(time, currents[1], 'y-')
-                # plt.figure('X')
-                # plt.plot(time, v_plts[2], 'k-')
-                # plt.plot(time, currents[2], 'm-')
-                sp = spikeplot.SpikePlot()
-                sp.plot_spikes(spikes)
-                plt.show()
-                write_weights()
-        # elif mapping[key] == 'X' and x_count > 0:
-        #     print(key)
-        #     results, currents, time, v_plts, spikes = network.start(key)
-        #     print_result(results)
-        #     network.conduct_training(2)
-        #     x_count -= 1
-        #     if x_count == 0 and a_count == 0 and b_count == 0:
-        #         plt.figure('A')
-        #         plt.plot(time, v_plts[0], 'g-')
-        #         plt.plot(time, currents[0], 'r-')
-        #         plt.figure('B')
-        #         plt.plot(time, v_plts[1], 'b-')
-        #         plt.plot(time, currents[1], 'y-')
-        #         plt.figure('X')
-        #         plt.plot(time, v_plts[2], 'k-')
-        #         plt.plot(time, currents[2], 'm-')
-        #         sp = spikeplot.SpikePlot()
-        #         sp.plot_spikes(spikes)
-        #         plt.show()
-        #         write_weights()
+            if a_count == 0 and b_count == 0 and x_count == 0:
+                show_plots(time, v_plts, currents, spikes)
+                write_weights(network)
+        elif mapping[key] == 'X' and x_count > 0:
+            print(key)
+            results, currents, time, v_plts, spikes = network.start(key)
+            print_result(results)
+            network.conduct_training(2)
+            x_count -= 1
+            if x_count == 0 and a_count == 0 and b_count == 0:
+                show_plots(time, v_plts, currents, spikes)
+                write_weights(network)
+                # elif mapping[key] == 'D':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(3)
+                # elif mapping[key] == 'E':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(4)
+                # elif mapping[key] == 'F':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(5)
+                # elif mapping[key] == 'G':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(6)
+                # elif mapping[key] == 'H':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(7)
+                # elif mapping[key] == 'I':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(8)
+                # elif mapping[key] == 'J':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(9)
+                # elif mapping[key] == 'K':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(10)
+                # elif mapping[key] == 'L':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(11)
+                # elif mapping[key] == 'M':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(12)
+                # elif mapping[key] == 'N':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(13)
+                # elif mapping[key] == 'O':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(14)
+                # elif mapping[key] == 'P':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(15)
+                # elif mapping[key] == 'Q':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(16)
+                # elif mapping[key] == 'R':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(17)
+                # elif mapping[key] == 'S':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(18)
+                # elif mapping[key] == 'T':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(19)
+                # elif mapping[key] == 'U':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(20)
+                # elif mapping[key] == 'V':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(21)
+                # elif mapping[key] == 'W':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(22)
+                # elif mapping[key] == 'X':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(23)
+                # elif mapping[key] == 'Y':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(24)
+                # elif mapping[key] == 'Z':
+                #     print(key)
+                #     results = network.start(key)
+                #     print_result(results)
+                #     network.conduct_training(25)
+
+    print(datetime.now())
+
+
+if __name__ == "__main__":
+    prototype_trains = []
+    if len(sys.argv) > 1:
+        test()
+    else:
+        train()
+    # network = Network.Network()
+    #
+    # mapping = dict()
+    #
+    # audio_path = "letter_audio/speech/isolet1"
+    #
+    # # Gets list of all audio files in the directory
+    # audio = [os.path.join(root, name)
+    #              for root, dirs, files in os.walk(audio_path)
+    #              for name in files
+    #              if name.endswith((".wav"))]
+    #
+    # audio_path = "letter_audio/speech/isolet2"
+    # audio2 = [os.path.join(root, name)
+    #              for root, dirs, files in os.walk(audio_path)
+    #              for name in files
+    #              if name.endswith((".wav"))]
+    #
+    # audio.extend(audio2)
+    # audio_path = "letter_audio/speech/isolet3"
+    # audio3 = [os.path.join(root, name)
+    #              for root, dirs, files in os.walk(audio_path)
+    #              for name in files
+    #              if name.endswith((".wav"))]
+    # audio.extend(audio3)
+
+    #shuffle(audio)
+
+
+    # audio_path = "letter_audio/speech/isolet4"
+    # audio4 = [os.path.join(root, name)
+    #              for root, dirs, files in os.walk(audio_path)
+    #              for name in files
+    #              if name.endswith((".wav"))]
+    # audio.extend(audio4)
+
+    # Get a mapping of labels to audio
+    # for fname in audio:
+    #     mapping[fname] = Utils.get_label(fname)
+    #
+    # print(datetime.now())
+    # count = 30
+    # x_count = 35
+    # a_count = 35
+    # b_count = 35
+    # for key in mapping:
+    #     if mapping[key] == 'A' and a_count > 0:
+    #         print(key)
+    #         results, currents, time, v_plts, spikes = network.start(key)
+    #         print_result(results)
+    #         network.conduct_training(0)
+    #         a_count -= 1
+    #         if a_count == 0 and b_count == 0 and x_count == 0:
+    #             plt.figure('A')
+    #             plt.plot(time, v_plts[0], 'g-')
+    #             plt.plot(time, currents[0], 'r-')
+    #             plt.figure('B')
+    #             plt.plot(time, v_plts[1], 'b-')
+    #             plt.plot(time, currents[1], 'y-')
+    #             plt.figure('X')
+    #             plt.plot(time, v_plts[2], 'k-')
+    #             plt.plot(time, currents[2], 'm-')
+    #             plt.figure('All')
+    #             plt.plot(time, v_plts[0], 'g-')
+    #             plt.plot(time, currents[0], 'r-')
+    #             plt.plot(time, v_plts[1], 'b-')
+    #             plt.plot(time, currents[1], 'y-')
+    #             plt.plot(time, v_plts[2], 'k-')
+    #             plt.plot(time, currents[2], 'm-')
+    #             sp = spikeplot.SpikePlot()
+    #             sp.plot_spikes(spikes)
+    #             plt.show()
+    #             write_weights()
+    #     elif mapping[key] == 'B' and b_count > 0:
+    #         print(key)
+    #         results, currents, time, v_plts, spikes = network.start(key)
+    #         print_result(results)
+    #         network.conduct_training(1)
+    #         b_count -= 1
+    #         if a_count == 0 and b_count == 0 and x_count == 0:
+    #             plt.figure('A')
+    #             plt.plot(time, v_plts[0], 'g-')
+    #             plt.plot(time, currents[0], 'r-')
+    #             plt.figure('B')
+    #             plt.plot(time, v_plts[1], 'b-')
+    #             plt.plot(time, currents[1], 'y-')
+    #             plt.figure('X')
+    #             plt.plot(time, v_plts[2], 'k-')
+    #             plt.plot(time, currents[2], 'm-')
+    #             plt.figure('All')
+    #             plt.plot(time, v_plts[0], 'g-')
+    #             plt.plot(time, currents[0], 'r-')
+    #             plt.plot(time, v_plts[1], 'b-')
+    #             plt.plot(time, currents[1], 'y-')
+    #             plt.plot(time, v_plts[2], 'k-')
+    #             plt.plot(time, currents[2], 'm-')
+    #             sp = spikeplot.SpikePlot()
+    #             sp.plot_spikes(spikes)
+    #             plt.show()
+    #             write_weights()
+    #     elif mapping[key] == 'X' and x_count > 0:
+    #         print(key)
+    #         results, currents, time, v_plts, spikes = network.start(key)
+    #         print_result(results)
+    #         network.conduct_training(2)
+    #         x_count -= 1
+    #         if x_count == 0 and a_count == 0 and b_count == 0:
+    #             plt.figure('A')
+    #             plt.plot(time, v_plts[0], 'g-')
+    #             plt.plot(time, currents[0], 'r-')
+    #             plt.figure('B')
+    #             plt.plot(time, v_plts[1], 'b-')
+    #             plt.plot(time, currents[1], 'y-')
+    #             plt.figure('X')
+    #             plt.plot(time, v_plts[2], 'k-')
+    #             plt.plot(time, currents[2], 'm-')
+    #             plt.figure('All')
+    #             plt.plot(time, v_plts[0], 'g-')
+    #             plt.plot(time, currents[0], 'r-')
+    #             plt.plot(time, v_plts[1], 'b-')
+    #             plt.plot(time, currents[1], 'y-')
+    #             plt.plot(time, v_plts[2], 'k-')
+    #             plt.plot(time, currents[2], 'm-')
+    #             sp = spikeplot.SpikePlot()
+    #             sp.plot_spikes(spikes)
+    #             plt.show()
+    #             write_weights()
         # elif mapping[key] == 'D':
         #     print(key)
         #     results = network.start(key)

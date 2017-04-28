@@ -12,6 +12,8 @@ class Synapse:
         #self.w = random.uniform(0, 1)
         self.w = .5
 
+    def set_weight(self, w):
+        self.w = float(w)
 
     def set_input_neuron(self, neuron):
         self.input_neuron = neuron
