@@ -28,3 +28,11 @@ We decided to take a similar approach but apply it to the English stop consonant
 been done in a separate study using a Time Delay Neural Network (TDNN). By successfully
 achieving our goal in this project, we hope to expand the list of letters that can be recognized to
 include the entire English alphabet.
+
+To Train:
+1. Navigate to the directory containing SNN.py 
+2. run the command python SNN.py train
+
+To Test:
+1. Navigate to the directory containing SNN.py
+2. run the command python SNN.py
